@@ -69,6 +69,9 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		e.metricOptions.ServiceReplicasGauge.
 			WithLabelValues(serviceName).
 			Set(float64(service.Replicas))
+
+		// 添加这一句，获取一下函数调用数，如果没有，会自动设置为0
+		e.metricOptions.GatewayFunctionInvocation.GetMetricWithLabelValues(serviceName, "200")
 	}
 
 	e.metricOptions.ServiceReplicasGauge.Collect(ch)

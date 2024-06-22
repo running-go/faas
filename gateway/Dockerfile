@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/openfaas/license-check:0.4.1 as license-check
+#FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/openfaas/license-check:0.4.1 as license-check
 
 FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 as build
 
@@ -13,7 +13,7 @@ ARG TARGETARCH
 ARG GIT_COMMIT
 ARG VERSION
 
-COPY --from=license-check /license-check /usr/bin/
+#COPY --from=license-check /license-check /usr/bin/
 
 WORKDIR /go/src/github.com/openfaas/faas/gateway
 

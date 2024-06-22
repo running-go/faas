@@ -11,10 +11,10 @@ import (
 
 const (
 	// DefaultMinReplicas is the minimal amount of replicas for a service.
-	DefaultMinReplicas = 1
+	DefaultMinReplicas = 0
 
 	// DefaultMaxReplicas is the amount of replicas a service will auto-scale up to.
-	DefaultMaxReplicas = 5
+	DefaultMaxReplicas = 50
 
 	// DefaultScalingFactor is the defining proportion for the scaling increments.
 	DefaultScalingFactor = 10
@@ -56,7 +56,7 @@ func MakeHorizontalScalingHandler(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		if scaleRequest.Replicas < 1 {
-			scaleRequest.Replicas = 1
+			scaleRequest.Replicas = 0
 		}
 
 		if scaleRequest.Replicas > DefaultMaxReplicas {

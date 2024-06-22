@@ -78,10 +78,17 @@ func scaleService(alert requests.PrometheusInnerAlert, service scaling.ServiceQu
 	serviceName, namespace := middleware.GetNamespace(defaultNamespace, alert.Labels.FunctionName)
 
 	if len(serviceName) > 0 {
+		// 获取现在的副本数
 		queryResponse, getErr := service.GetReplicas(serviceName, namespace)
 		if getErr == nil {
 			status := alert.Status
 
+			// 添加这个判断，如果告警名字是APINoInvocation，就直接给我缩到0
+			if alert.Labels.AlertName == "APINoInvocation" {
+				status = "resolved"
+			}
+
+			// 计算新的副本数
 			newReplicas := CalculateReplicas(status, queryResponse.Replicas, uint64(queryResponse.MaxReplicas), queryResponse.MinReplicas, queryResponse.ScalingFactor)
 
 			log.Printf("[Scale] function=%s %d => %d.\n", serviceName, queryResponse.Replicas, newReplicas)
