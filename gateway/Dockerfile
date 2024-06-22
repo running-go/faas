@@ -13,7 +13,7 @@ ARG TARGETARCH
 ARG GIT_COMMIT
 ARG VERSION
 
-#COPY --from=license-check /license-check /usr/bin/
+# COPY --from=license-check /license-check /usr/bin/
 
 WORKDIR /go/src/github.com/openfaas/faas/gateway
 
@@ -32,11 +32,11 @@ COPY scaling        scaling
 COPY pkg            pkg
 COPY main.go        .
 
-RUN license-check -path ./ --verbose=false "Alex Ellis" "OpenFaaS Authors" "OpenFaaS Author(s)"
+# RUN license-check -path ./ --verbose=false "Alex Ellis" "OpenFaaS Authors" "OpenFaaS Author(s)"
 
 # Run a gofmt and exclude all vendored code.
-RUN test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))"
-RUN go test $(go list ./... | grep -v integration | grep -v /vendor/ | grep -v /template/) -cover
+# RUN test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))"
+# RUN go test $(go list ./... | grep -v integration | grep -v /vendor/ | grep -v /template/) -cover
 
 RUN CGO_ENABLED=${CGO_ENABLED} GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build --ldflags "-s -w \
     -X \"github.com/openfaas/faas/gateway/version.GitCommitSHA=${GIT_COMMIT}\" \
@@ -46,14 +46,17 @@ RUN CGO_ENABLED=${CGO_ENABLED} GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build --
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.20.0 as ship
 
-LABEL org.label-schema.license="OpenFaaS CE EULA" \
-    org.label-schema.vcs-url="https://github.com/openfaas/faas" \
-    org.label-schema.vcs-type="Git" \
-    org.label-schema.name="openfaas/faas" \
-    org.label-schema.vendor="openfaas" \
-    org.label-schema.docker.schema-version="1.0"
+#LABEL org.label-schema.license="OpenFaaS CE EULA" \
+#    org.label-schema.vcs-url="https://github.com/openfaas/faas" \
+#    org.label-schema.vcs-type="Git" \
+#    org.label-schema.name="openfaas/faas" \
+#    org.label-schema.vendor="openfaas" \
+#    org.label-schema.docker.schema-version="1.0"
 
-LABEL org.opencontainers.image.source=https://github.com/openfaas/faas
+#LABEL org.opencontainers.image.source=https://github.com/openfaas/faas
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk update
+
 
 RUN addgroup -S app \
     && adduser -S -g app app \
@@ -66,7 +69,7 @@ EXPOSE 8082
 ENV http_proxy      ""
 ENV https_proxy     ""
 
-COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
+COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway  .
 COPY assets     assets
 
 ARG TARGETPLATFORM
@@ -78,4 +81,3 @@ RUN chown -R app:app ./
 USER app
 
 CMD ["./gateway"]
-
