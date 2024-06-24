@@ -40,5 +40,5 @@ jobs:
             VERSION=${{ env.TAG }}
             GIT_COMMIT=${{ github.sha }}
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY__OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:${{ github.sha }}
-            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY__OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:latest
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY_OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY_OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:latest
