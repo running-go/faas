@@ -29,7 +29,6 @@ jobs:
       - name: Get Repo Owner
         id: get_repo_owner
         run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" > $GITHUB_ENV
-
       - name: Build ${{ matrix.svc }}
         uses: docker/build-push-action@v3
         with:
@@ -41,5 +40,5 @@ jobs:
             VERSION=${{ env.TAG }}
             GIT_COMMIT=${{ github.sha }}
           tags: |
-            ghcr.io/${{ env.REPO_OWNER }}/gateway:${{ github.sha }}
-            ghcr.io/${{ env.REPO_OWNER }}/gateway:latest
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY__OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_REGISTRY__OPENFAAS_NAMESPACE }}/${{ env.REPO_OWNER }}/gateway:latest
